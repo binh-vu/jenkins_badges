@@ -5,6 +5,14 @@
 from .__version__ import __version__
 
 from flask import Flask
+from werkzeug.routing import BaseConverter
+
+
+
+class RegexConverter(BaseConverter):
+    def __init__(self, url_map, *items):
+        super(RegexConverter, self).__init__(url_map)
+        self.regex = items[0]
 
 
 def create_app(from_envvar=False, base_url=None, username=None, token=None,
@@ -38,6 +46,7 @@ def create_app(from_envvar=False, base_url=None, username=None, token=None,
     '''
 
     app = Flask(__name__)
+    app.url_map.converters['regex'] = RegexConverter
 
     app.config['JENKINS_BASE_URL'] = base_url
     app.config['JENKINS_USERNAME'] = username
